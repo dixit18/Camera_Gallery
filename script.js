@@ -28,11 +28,24 @@ navigator.mediaDevices.getUserMedia(constraint)
     recorder.addEventListener("stop",(e)=>{
         //conversion of media chunks data to video
         let blob = new Blob(chunks, { type: "video/mp4" });
-        let videoURL = URL.createObjectURL(blob);
-        let a = document.createElement("a");
-        a.href = videoURL;
-        a.download = "stream.mp4";
-        a.click();
+
+        if(db){
+            let videoID = shortid();
+            let dbTransaction = db.transaction("video", "readwrite");
+          let videoStore =  dbTransaction.objectStore("video");
+          let videoEntry = {
+            id: `vid-${videoID}`,
+              blobData: blob
+          }
+          videoStore.add(videoEntry);
+
+        }
+
+        // let videoURL = URL.createObjectURL(blob);
+        // let a = document.createElement("a");
+        // a.href = videoURL;
+        // a.download = "stream.mp4";
+        // a.click();
     })
 
 })
@@ -55,6 +68,7 @@ recordBtnCont.addEventListener("click",(e)=>{
 })
 
 captureBtnCont.addEventListener("click",(e)=>{
+    captureBtn.classList.add("scale-capture");
     let canvas = document.createElement("canvas");
     canvas.width = video.width;
     canvas.height = video.height;
@@ -64,12 +78,23 @@ captureBtnCont.addEventListener("click",(e)=>{
     // filtering
     tool.fillStyle = transparentColor;
     tool.fillRect(0,0,canvas.width,canvas.height);
-
     let imageURL = canvas.toDataURL();
-    let a = document.createElement("a");
-        a.href = imageURL;
-        a.download = "img.jpg";
-        a.click();
+
+    if(db){
+        let imageID = shortid();
+        let dbTransaction = db.transaction("image", "readwrite");
+      let imageStore =  dbTransaction.objectStore("image");
+      let imageEntry = {
+        id: `img-${imageID}`,
+          url: imageURL
+      }
+      imageStore.add(imageEntry);
+
+    }
+
+    setTimeout(()=>{
+        captureBtn.classList.remove("scale-capture")
+    },500)
 })
 let timerID;
 let timer = document.querySelector(".timer");

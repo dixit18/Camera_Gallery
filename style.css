@@ -127,3 +127,16 @@ border-radius: 50%;
     
     z-index: 1;
 }
+.material-icons{
+    color: white;
+    font-size: 3rem;
+}
+.gallary{
+    position: absolute;
+    right: 6rem;
+    bottom: 7rem;
+    z-index: 2;
+}
+.gallary:hover{
+    cursor: pointer;
+}
